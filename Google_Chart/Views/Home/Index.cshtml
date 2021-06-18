@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="chart_div_bar_chart"></div>
+<div id="chart_div_pie_chart"></div>
+<div id="chart_div_line_chart"></div>
+
+@section Scripts {
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
+
+        google.charts.load('current', {
+            packages: ['corechart', 'bar']
+        });
+        google.charts.setOnLoadCallback(LoadData);
+
+        function LoadData() {
+            $.ajax({
+                url: 'Home/GetData',
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    DrawBarChart(data);
+                    DrawPieChart(data);
+                    DrawLineChart(data);
+                }
+            });
+        }
+
+        function DrawBarChart(chartData) {
+
+            var data = new google.visualization.DataTable();
+
+            data.addColumn('string', 'Subject');
+            data.addColumn('number', 'Score');
+
+            for (var i = 0; i < chartData.length; i++) {
+                data.addRow([chartData[i].subject, chartData[i].score]);
+            }
+
+            var options = {
+                title: 'Student Subject Marks',
+                chartArea: {
+                    width: '50%'
+                },
+                hAxis: {
+                    title: 'Subjects',
+                    minValue: 0
+                },
+                vAxis: {
+                    title: 'Total Score'
+                }
+            };  
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_bar_chart'));
+
+            chart.draw(data, options);  
+
+        }
+
+        function DrawPieChart(chartData) {
+
+            var data = new google.visualization.DataTable();
+
+            data.addColumn('string', 'Subject');
+            data.addColumn('number', 'Score');
+
+            for (var i = 0; i < chartData.length; i++) {
+                data.addRow([chartData[i].subject, chartData[i].score]);
+            }
+
+            var options = {
+                title: 'Student Subject Marks',
+                position: "top",
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div_pie_chart'));
+
+            chart.draw(data, options);
+
+        }
+
+        function DrawLineChart(chartData) {
+
+            var data = new google.visualization.DataTable();
+
+            data.addColumn('string', 'Subject');
+            data.addColumn('number', 'Score');
+
+            for (var i = 0; i < chartData.length; i++) {
+                data.addRow([chartData[i].subject, chartData[i].score]);
+            }
+
+            var options = {
+                title: 'Student Subject Marks',
+                chartArea: {
+                    width: '50%'
+                },
+                hAxis: {
+                    title: 'Subjects',
+                    minValue: 0
+                },
+                vAxis: {
+                    title: 'Total Score'
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div_line_chart'));
+
+            chart.draw(data, options);
+        }
+
+    </script>
+
+}
